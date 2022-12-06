@@ -1,4 +1,5 @@
-"""Solution for Exercise 1."""
+"""Solution for Exercise 3. This has been inspired by \
+http://tinsy.me/y8nifw"""
 import logging
 import pathlib
 from concurrent.futures import ProcessPoolExecutor

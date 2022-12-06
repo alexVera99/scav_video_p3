@@ -1,8 +1,8 @@
 """Solution for Exercise 1."""
 import logging
 import pathlib
-import json
-import src.utils as ut
+import exercise_3
+import utils as ut
 
 
 def build_hls_container(filename_path: pathlib.Path,

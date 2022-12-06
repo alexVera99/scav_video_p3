@@ -5,15 +5,22 @@ import json
 import src.utils as ut
 
 
-def build_hls_container(filename_path: pathlib.Path) -> pathlib.Path:
+def build_hls_container(filename_path: pathlib.Path,
+                        output_dir_path: pathlib = pathlib.Path("")
+                        ) -> pathlib.Path:
     """
     Builds an HLS container of the given video. Inspired in \
     https://ottverse.com/hls-packaging-using-ffmpeg-live-vod.
 
     :param filename_path: video filename path
+    :param output_dir_path: (optional) output directory path
     :return: path of the hls container
     """
-    video_directory = filename_path.parent
+
+    if output_dir_path == pathlib.Path(""):
+        dir_name = filename_path.name.split(".")[0]
+        dir_path = filename_path.parent
+        output_dir_path = dir_path / f"{dir_name}_HLS"
 
     cmd = ['ffmpeg', '-y', '-i', filename_path,
            '-filter_complex', '[0:v]split=3[v1][v2][v3];'
@@ -36,10 +43,10 @@ def build_hls_container(filename_path: pathlib.Path) -> pathlib.Path:
            '48k', '-ac', '2', '-f', 'hls', '-hls_time', '2',
            '-hls_playlist_type', 'vod', '-hls_flags', 'independent_segments',
            '-hls_segment_type', 'mpegts', '-hls_segment_filename',
-           video_directory / 'stream_%v/data%02d.ts', '-master_pl_name',
-           video_directory / 'master.m3u8',
+           output_dir_path / 'stream_%v/data%02d.ts', '-master_pl_name',
+           output_dir_path / 'master.m3u8',
            '-var_stream_map', 'v:0,a:0 v:1,a:1 v:2,a:2',
-           video_directory / 'stream_%v.m3u8']
+           output_dir_path / 'stream_%v.m3u8']
 
     logging.info(f"Building the HLS container for {filename_path}...")
 
@@ -48,7 +55,7 @@ def build_hls_container(filename_path: pathlib.Path) -> pathlib.Path:
 
     logging.info(f"HLS container for {filename_path}")
 
-    return "Done"
+    return output_dir_path
 
 
 def main():
@@ -59,9 +66,9 @@ def main():
     """
     video_filename = pathlib.Path("../data/bbb.mp4")
 
-    hls_container_filename = build_hls_container(video_filename)
+    hls_container_dir = build_hls_container(video_filename)
 
-    print(hls_container_filename)
+    print(hls_container_dir)
 
 
 if __name__ == "__main__":

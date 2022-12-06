@@ -3,7 +3,6 @@ http://tinsy.me/y8nifw"""
 import logging
 import pathlib
 from concurrent.futures import ProcessPoolExecutor
-import sys
 import utils as ut
 
 
